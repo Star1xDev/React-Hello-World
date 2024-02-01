@@ -1,14 +1,18 @@
 import { useState, useEffect } from "react";
 
-const Greeting = () => {
+const Greeting = ({randomMax}) => {
 
     const [randomNumber, setRandomNumber] = 
-    useState(Math.floor(Math.random() * 5) + 1 );
-    const [greeting, setGreeting] = useState("");
+    useState(Math.floor(Math.random() * randomMax) + 1 );
+    const [greeting, setGreeting] = useState();
 
     useEffect(() => {
         window.localStorage.setItem("randomNum", randomNumber);
-        console.log(randomNumber);
+        if (randomMax === randomNumber) {
+            window.localStorage.setItem('jackpot', true);
+        } else {
+            window.localStorage.setItem("jackpot", false);
+        }
         switch(randomNumber) {
             case 1:
                 setGreeting("Hello");
@@ -25,11 +29,26 @@ const Greeting = () => {
             case 5:
                 setGreeting("Ciao");
                 break;
+            case 6:
+                setGreeting("Holo");
+                break;
+            case 7:
+                setGreeting("hallo");
+                break;
+            case 8:
+                setGreeting("Czercs");
+                break;
             default:
                 setGreeting("Hello");         
         };
 
-    }, [randomNumber]);
+        return () => {
+            console.log("clean up ");
+            window.localStorage.removeItem("randomNum");
+            window.localStorage.removeItem('jackpot');
+        }
+
+    }, [randomNumber, randomMax]);
 
     return ( 
         <h1 className="Greeting">{greeting}</h1>
